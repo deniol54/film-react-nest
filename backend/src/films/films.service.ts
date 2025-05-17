@@ -10,6 +10,6 @@ export class FilmsService {
   }
 
   async getScheduleFilm(id: string) {
-    return await this.filmsRepository.findScheduleById(id);
+    return await this.filmsRepository.findAllSchedulesById(id);
   }
 }

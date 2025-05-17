@@ -1,9 +1,12 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { OrderService } from './order.service';
+import { GetOrderDTO } from './dto/order.dto';
 
 @Controller('order')
 export class OrderController {
-  @Post() // а этот для запроса POST /films
-  create(): string {
-    return 'Это метод создания нового фильма';
+  constructor(private readonly orderService: OrderService) {}
+  @Post() // а этот для запроса POST /films // этот метод будет вызван для запроса GET /films
+  getFilms(@Body() orderData: GetOrderDTO) {
+    return this.orderService.createOrder(orderData);
   }
 }

@@ -13,6 +13,7 @@ export class GetFilmDTO {
 }
 
 export class GetScheduleDTO {
+  id: string;
   daytime: Date;
   hall: number;
   rows: number;

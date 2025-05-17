@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { GetFilmDTO, GetScheduleDTO } from '../films/dto/films.dto';
@@ -52,14 +52,73 @@ export class FilmsMongoDbRepository {
     };
   }
 
-  async findScheduleById(
+  async findAllSchedulesById(
     filmId: string,
   ): Promise<{ total: number; items: GetScheduleDTO[] }> {
-    const film = await this.filmModel.findOne({ id: filmId }); //используем обычные методы Mongoose-документов
+    const film = await this.findFilmById(filmId); //используем обычные методы Mongoose-документов
     const schedule = film.schedule;
     return {
       total: schedule.length,
       items: schedule.map(this.getScheludeMapperFn()),
     };
+  }
+
+  async findFilmById(filmId: string): Promise<GetFilmDTO> {
+    try {
+      const film = await this.filmModel.findOne({ id: filmId });
+      const mapper = this.getFilmMapperFn();
+      return mapper(film);
+    } catch {
+      throw new NotFoundException(`Фильм с ${filmId} не найден`);
+    }
+  }
+
+  async findSchedulesById(
+    filmId: string,
+    scheduleId: string,
+  ): Promise<GetScheduleDTO> {
+    const { items } = await this.findAllSchedulesById(filmId);
+    const schedule = items.find((el) => el.id === scheduleId);
+    if (!schedule) {
+      throw new NotFoundException(`Сеанса с ${scheduleId} не найден`);
+    }
+    return schedule;
+  }
+
+  async checkPlace(
+    filmId: string,
+    scheduleId: string,
+    place: string,
+  ): Promise<boolean> {
+    const res = await this.filmModel.find({
+      id: filmId,
+      schedule: {
+        $elemMatch: {
+          id: scheduleId,
+          taken: place,
+        },
+      },
+    });
+    return Boolean(res.length);
+  }
+
+  async updatePlaces(
+    filmId: string,
+    scheduleId: string,
+    place: string,
+  ): Promise<void> {
+    await this.filmModel.updateOne(
+      {
+        id: filmId,
+        schedule: {
+          $elemMatch: {
+            id: scheduleId,
+          },
+        },
+      },
+      {
+        $push: { 'schedule.$.taken': place },
+      },
+    );
   }
 }
