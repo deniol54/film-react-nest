@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { FilmsMongoDbRepository } from '../repository/films.repository';
+import { FilmsMongoDbRepository } from '../repository/filmsMongoDb.repository';
 import { GetOrderDTO, GetTicketDTO } from './dto/order.dto';
 
 @Injectable()
