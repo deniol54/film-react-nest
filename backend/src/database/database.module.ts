@@ -20,6 +20,10 @@ export class DatabaseModule {
         imports.push(
           MongooseModule.forFeature([{ name: Film.name, schema: FilmSchema }]),
         );
+        providers.push({
+          provide: 'FILMS_REPOSITORY',
+          useClass: FilmsMongoDbRepository,
+        });
         providers.push(FilmsMongoDbRepository);
         break;
 
@@ -37,6 +41,10 @@ export class DatabaseModule {
           }),
         );
         imports.push(TypeOrmModule.forFeature([FilmEntity, ScheduleEntity]));
+        providers.push({
+          provide: 'FILMS_REPOSITORY',
+          useClass: FilmsPostgreSQLRepository,
+        });
         providers.push(FilmsPostgreSQLRepository);
         break;
     }
