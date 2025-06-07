@@ -3,8 +3,8 @@ import {
   IsString,
   IsNumber,
   IsEmail,
-  IsMobilePhone,
   IsArray,
+  IsPhoneNumber,
 } from 'class-validator';
 
 export class GetTicketDTO {
@@ -31,6 +31,6 @@ export class GetOrderDTO {
   tickets: GetTicketDTO[];
   @IsEmail()
   email: string;
-  @IsMobilePhone('ru-RU')
+  @IsPhoneNumber()
   phone: string;
 }
