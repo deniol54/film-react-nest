@@ -1,10 +1,11 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { FilmsMongoDbRepository } from '../repository/filmsMongoDb.repository';
 import { GetOrderDTO, GetTicketDTO } from './dto/order.dto';
+import { FilmsPostgreSQLRepository } from '../repository/filmsPostgeSQL.repository';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly filmsRepository: FilmsMongoDbRepository) {}
+  constructor(private readonly filmsRepository: FilmsPostgreSQLRepository) {}
 
   async createOrder(
     orderData: GetOrderDTO,

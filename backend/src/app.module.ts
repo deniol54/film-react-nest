@@ -9,6 +9,7 @@ import { OrderService } from './order/order.service';
 import { FilmsController } from './films/films.controller';
 import { OrderController } from './order/order.controller';
 import { DatabaseModule } from './database/database.module';
+import { applicationConfig } from './app.config.provider';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { DatabaseModule } from './database/database.module';
       rootPath: path.join(__dirname, '..', 'public'),
       renderPath: '/content/afisha/',
     }),
-    DatabaseModule.register(),
+    DatabaseModule.register(applicationConfig.DATABASE_DRIVER),
   ],
   controllers: [FilmsController, OrderController],
   providers: [configProvider, FilmsService, OrderService],

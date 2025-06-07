@@ -1,10 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { ScheduleEntity } from './schedule.entity';
 
-@Entity()
+@Entity('films')
 export class FilmEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   rating: number;
@@ -12,7 +12,7 @@ export class FilmEntity {
   @Column()
   director: string;
 
-  @Column()
+  @Column('text', { array: true })
   tags: string;
 
   @Column()
@@ -30,6 +30,6 @@ export class FilmEntity {
   @Column()
   description: string;
 
-  @OneToMany(() => ScheduleEntity, (schedule) => schedule.filmId)
-  cities: ScheduleEntity[];
+  @OneToMany(() => ScheduleEntity, (schedule) => schedule.film)
+  schedule: ScheduleEntity[];
 }

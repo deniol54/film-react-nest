@@ -8,19 +8,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleEntity } from '../films/entity/schedule.entity';
 import { FilmEntity } from '../films/entity/film.entity';
 
-export enum DBMS {
-  MongoDB,
-  PostgreSQL,
-}
-
 @Module({})
 export class DatabaseModule {
-  static register(dbms: DBMS): DynamicModule {
+  static register(dbms: string): DynamicModule {
     const providers = [];
     const imports = [];
 
     switch (dbms) {
-      case DBMS.MongoDB:
+      case 'mongodb':
         imports.push(MongooseModule.forRoot(applicationConfig.DATABASE_URL));
         imports.push(
           MongooseModule.forFeature([{ name: Film.name, schema: FilmSchema }]),
@@ -28,7 +23,7 @@ export class DatabaseModule {
         providers.push(FilmsMongoDbRepository);
         break;
 
-      case DBMS.PostgreSQL:
+      case 'postgres':
         imports.push(
           TypeOrmModule.forRoot({
             type: 'postgres',
@@ -38,7 +33,7 @@ export class DatabaseModule {
             password: applicationConfig.DATABASE_PASSWORD,
             database: applicationConfig.DATABASE_NAME,
             entities: [FilmEntity, ScheduleEntity],
-            synchronize: true,
+            synchronize: false,
           }),
         );
         imports.push(TypeOrmModule.forFeature([FilmEntity, ScheduleEntity]));

@@ -7,10 +7,10 @@ import {
 } from 'typeorm';
 import { FilmEntity } from './film.entity';
 
-@Entity()
+@Entity('schedules')
 export class ScheduleEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   daytime: string;
@@ -27,10 +27,13 @@ export class ScheduleEntity {
   @Column()
   price: number;
 
-  @Column()
-  taken: string[];
+  @Column('text', { array: true })
+  taken: string;
 
-  @ManyToOne(() => FilmEntity, (film) => film.id)
-  @JoinColumn()
-  filmId: FilmEntity;
+  @ManyToOne(() => FilmEntity, (film) => film.schedule)
+  @JoinColumn({ name: 'filmId' })
+  film: FilmEntity;
+
+  @Column()
+  filmId: string;
 }
