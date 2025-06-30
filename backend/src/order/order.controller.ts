@@ -5,8 +5,8 @@ import { GetOrderDTO } from './dto/order.dto';
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
-  @Post() // а этот для запроса POST /films // этот метод будет вызван для запроса GET /films
-  getFilms(@Body() orderData: GetOrderDTO) {
+  @Post() // а этот для запроса POST /films
+  createOrder(@Body() orderData: GetOrderDTO) {
     return this.orderService.createOrder(orderData);
   }
 }
