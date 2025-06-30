@@ -1,9 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { FilmsMongoDbRepository } from '../repository/films.repository';
+import { Injectable, Inject } from '@nestjs/common';
+import { FilmsMongoDbRepository } from '../repository/filmsMongoDb.repository';
+import { FilmsPostgreSQLRepository } from '../repository/filmsPostgeSQL.repository';
 
 @Injectable()
 export class FilmsService {
-  constructor(private readonly filmsRepository: FilmsMongoDbRepository) {}
+  constructor(
+    @Inject('FILMS_REPOSITORY')
+    private readonly filmsRepository:
+      | FilmsMongoDbRepository
+      | FilmsPostgreSQLRepository,
+  ) {}
 
   async getAllFilms() {
     return this.filmsRepository.findAllFilms();
