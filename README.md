@@ -10,7 +10,7 @@
 
 3) Скопируйте дамп базы данных в нужную директорию
 
-4) Запустите приложение командой image: docker compose -f docker-compose.dev.yaml up
+4) Запустите приложение командой: docker compose -f docker-compose.dev.yaml up
 
 
 
