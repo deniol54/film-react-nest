@@ -105,8 +105,9 @@ export class FilmsMongoDbRepository {
   async updatePlaces(
     filmId: string,
     scheduleId: string,
-    place: string,
+    place: string[],
   ): Promise<void> {
+    const places = place.join(',');
     await this.filmModel.updateOne(
       {
         id: filmId,
@@ -117,7 +118,7 @@ export class FilmsMongoDbRepository {
         },
       },
       {
-        $push: { 'schedule.$.taken': place },
+        $push: { 'schedule.$.taken': places },
       },
     );
   }

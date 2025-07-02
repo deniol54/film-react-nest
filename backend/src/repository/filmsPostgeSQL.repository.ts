@@ -118,7 +118,7 @@ export class FilmsPostgreSQLRepository {
   async updatePlaces(
     filmId: string,
     scheduleId: string,
-    place: string,
+    places: string[],
   ): Promise<void> {
     try {
       const schedule = await this.scheduleRepository.findOne({
@@ -128,8 +128,8 @@ export class FilmsPostgreSQLRepository {
         },
       });
       const currentTaken = schedule.taken ? schedule.taken.split(',') : [];
-      currentTaken.push(place);
-      schedule.taken = currentTaken.join(',');
+      const taken = [...currentTaken, ...places];
+      schedule.taken = taken.join(',');
       await this.scheduleRepository.save(schedule);
     } catch (error) {
       throw new InternalServerErrorException('Ошибка добавления');

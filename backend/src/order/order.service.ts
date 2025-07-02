@@ -16,8 +16,10 @@ export class OrderService {
     orderData: GetOrderDTO,
   ): Promise<{ items: GetTicketDTO[]; total: number }> {
     const tickets = orderData.tickets;
+    const places: string[] = [];
+    const film = tickets[0].film;
+    const session = tickets[0].session;
     for (const ticket of tickets) {
-      await this.filmsRepository.findSchedulesById(ticket.film, ticket.session);
       const place = `${ticket.row}:${ticket.seat}`;
       if (
         await this.filmsRepository.checkPlace(
@@ -28,8 +30,9 @@ export class OrderService {
       ) {
         throw new BadRequestException(`Место ${place} уже забронировано`);
       }
-      this.filmsRepository.updatePlaces(ticket.film, ticket.session, place);
+      places.push(place);
     }
+    this.filmsRepository.updatePlaces(film, session, places);
     return { items: tickets, total: tickets.length };
   }
 }

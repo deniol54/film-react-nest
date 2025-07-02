@@ -1,0 +1,66 @@
+version: "3.9"
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    env_file: ./backend/.env.local
+    restart: "unless-stopped"
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    networks:
+      - dbnetwork
+      - frontnetwork
+  postgres:
+    image: "postgres:16"
+    container_name: database
+    restart: unless-stopped
+    env_file: ./postgres/.env
+    volumes:
+      - ./postgres/pg-init:/docker-entrypoint-initdb.d/
+      - ./postgres/data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    networks:
+      - dbnetwork
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    networks:
+      - frontnetwork
+    volumes:
+      - frontend_dist:/app/dist
+    env_file:
+      - frontend/.env.local
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 80:80
+    networks:
+      - frontnetwork
+    restart: unless-stopped
+    volumes:
+      - ./nginx:/etc/nginx
+      - frontend_dist:/data/www
+    depends_on:
+      - backend
+      - frontend
+
+networks:
+  dbnetwork:
+    driver: bridge
+  frontnetwork:
+    driver: bridge
+
+volumes:
+  frontend_dist:
